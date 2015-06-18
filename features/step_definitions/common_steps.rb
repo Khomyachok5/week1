@@ -3,5 +3,6 @@ Given(/^visitor opens start page$/) do
 end
 
 Then(/^visitor should see link to new account registration page$/) do
-  find_link('RegisterLink').visible?
+  find_link('Create new account').visible?
 end
+
