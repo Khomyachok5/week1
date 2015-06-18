@@ -41,8 +41,9 @@ group :development, :test do
 end
 
 group :test do
-  #gem 'cucumber-rails', '~> 1.4.2', require: false
-  gem 'cucumber', '~> 2.0.0'
+#  gem 'cucumber', '~> 2.0.0'
+  gem 'capybara', '~> 2.4.4'
+  gem 'cucumber-rails', '~> 1.4.2'#, require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
