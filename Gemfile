@@ -22,7 +22,7 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
-
+gem 'slim', '~> 3.0.6'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -38,12 +38,13 @@ group :development, :test do
 
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
+  gem 'rspec-rails', '~> 3.3.1'
 end
 
 group :test do
 #  gem 'cucumber', '~> 2.0.0'
   gem 'capybara', '~> 2.4.4'
-  gem 'cucumber-rails', '~> 1.4.2'#, require: false
+  gem 'cucumber-rails', '~> 1.4.2', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
