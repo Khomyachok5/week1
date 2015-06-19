@@ -1,12 +1,8 @@
-Given(/^user visits start page$/) do
-  visit '/'
-end
-
 When(/^user clicks "(.*?)" link$/) do |lnk|
   click_link(lnk)
 end
 
-Then(/^user should be redirected to "(.*?)" page$/) do |target_page|
+Then(/^user should be redirected to (.*?)$/) do |target_page|
   expect(current_path).to eq(target_page)
 end
 
@@ -17,8 +13,8 @@ Then(/^all fields are visible$/) do
   find_field('Sub-domain name').visible?
 end
 
-Given(/^user visits registration page$/) do
-  pending # express the regexp above with the code you wish you had
+Given(/^user visits (.*?)$/) do |target_page|
+  visit target_page
 end
 
 When(/^user properly fills the form$/) do

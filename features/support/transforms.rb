@@ -1,8 +1,8 @@
-Transform(/^RegisterLink$/) do |impersonator|
-  'Create new account'
+Transform(/^"Create new account" page$/) do |impersonator|
+  '/accounts/new'
 end
 
-Transform(/^create new account$/) do |impersonator|
-  '/accounts/new'
+Transform(/^"Start" page$/) do |impersonator|
+  '/'
 end
 
