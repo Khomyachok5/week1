@@ -18,11 +18,14 @@ Given(/^user visits (.*?)$/) do |target_page|
 end
 
 When(/^user properly fills the form$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in('E-mail', with: 'test@user.com')
+  fill_in('Password', with: '123456qwe')
+  fill_in('Password confirmation', with: '123456qwe')
+  fill_in('Sub-domain name', with: 'test_subdomain')
 end
 
-When(/^presses "(.*?)" button$/) do |arg1|
-  pending # express the regexp above with the code you wish you had
+When(/^presses "(.*?)" button$/) do |btn_label|
+  click_button btn_label
 end
 
 When(/^user leaves email field blank$/) do

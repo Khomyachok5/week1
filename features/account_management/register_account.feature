@@ -13,7 +13,7 @@ User info, used for registrartion - email(login), password, password re-type, su
   	Given user visits "Create new account" page
   	When user properly fills the form
   	And presses "Create Account" button
-  	Then user is redirected to "account created" page
+  	Then user should be redirected to "Account admin panel" page
 
   Scenario: user enters blank login
     Given user visits "Create new account" page
@@ -75,10 +75,6 @@ User info, used for registrartion - email(login), password, password re-type, su
   	Then user should see "Create Account" button is disabled
   	And user should see "passwords do not match" message
 
-  Scenario: user confirms registration
-  	Given user creates new account
-  	When user receives confirmation email
-  	And follows email confirmation link
-  	Then user is redirected to "email confirmed" page
+
 
 
