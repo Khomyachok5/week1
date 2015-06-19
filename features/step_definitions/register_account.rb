@@ -7,13 +7,14 @@ When(/^user clicks "(.*?)" link$/) do |lnk|
 end
 
 Then(/^user should be redirected to "(.*?)" page$/) do |target_page|
-  current_path.should == target_page
+  expect(current_path).to eq(target_page)
 end
 
-Then(/^registration page contains all fields$/) do
-  find_field('email').visible?
-  find_field('password').visible?
-  find_field('re-type password').visible?
+Then(/^all fields are visible$/) do
+  find_field('E-mail').visible?
+  find_field('Password').visible?
+  find_field('Password confirmation').visible?
+  find_field('Sub-domain name').visible?
 end
 
 Given(/^user visits registration page$/) do

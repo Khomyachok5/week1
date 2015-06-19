@@ -3,6 +3,6 @@ Transform(/^RegisterLink$/) do |impersonator|
 end
 
 Transform(/^create new account$/) do |impersonator|
-  '/users/new/'
+  '/accounts/new'
 end
 

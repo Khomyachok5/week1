@@ -7,7 +7,7 @@ User info, used for registrartion - email(login), password, password re-type, su
   	Given user visits start page
   	When user clicks "Create new account" link
   	Then user should be redirected to "create new account" page
-  	And registration page contains all fields
+    And all fields are visible
 
   Scenario: user registers new account
   	Given user visits registration page
