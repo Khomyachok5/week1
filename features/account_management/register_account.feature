@@ -8,6 +8,7 @@ User info, used for registrartion - email(login), password, password re-type, su
   	When user clicks "Create new account" link
   	Then user should be redirected to "Create new account" page
     And all fields are visible
+    And user should see "Create Account" button is disabled
 
   Scenario: user registers new account
   	Given user visits "Create new account" page

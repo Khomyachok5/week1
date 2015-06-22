@@ -29,19 +29,19 @@ When(/^presses "(.*?)" button$/) do |btn_label|
 end
 
 When(/^user leaves email field blank$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in('E-mail', with: '')
 end
 
-Then(/^user should see "(.*?)" button is disabled$/) do |arg1|
-  pending # express the regexp above with the code you wish you had
+Then(/^user should see "(.*?)" button is disabled$/) do |btn_label|
+  find_button(btn_label, disabled: true)
 end
 
 When(/^enters incorrect email$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in('E-mail', with: 'test#user,com')
 end
 
-Then(/^user should see "(.*?)" message$/) do |arg1|
-  pending # express the regexp above with the code you wish you had
+Then(/^user should see "(.*?)" message$/) do |message_text|
+  expect(page).to have_content(message_text)
 end
 
 When(/^enters existing email$/) do
@@ -49,27 +49,29 @@ When(/^enters existing email$/) do
 end
 
 When(/^user leaves subdomain field blank$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in('Sub-domain name', with: '')
 end
 
 When(/^enters incorrect subdomain$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in('Sub-domain name', with: 'hello world !!!')
 end
 
 When(/^enters existing subdomain$/) do
+  #fill_in('Sub-domain name', with: 'test_subdomain')
   pending # express the regexp above with the code you wish you had
 end
 
 When(/^user leaves password field blank$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in('Password', with: '')
 end
 
 When(/^user leaves re\-enter password field blank$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in('Password confirmation', with: '')
 end
 
 When(/^user fills re\-enter password field with incorrect password$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in('Password', with: '123456qwe')
+  fill_in('Password confirmation', with: '123456qwe!')
 end
 
 Given(/^user creates new account$/) do
