@@ -7,6 +7,6 @@ class AccountsController < ApplicationController
   end
 
   def show
-    render nothing: true
+    render text: 'invalid email'
   end
 end
