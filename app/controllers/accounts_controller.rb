@@ -7,6 +7,6 @@ class AccountsController < ApplicationController
   end
 
   def show
-    render text: 'invalid email'
+    render text: 'invalid email invalid subdomain'
   end
 end
