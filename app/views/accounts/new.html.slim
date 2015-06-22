@@ -2,16 +2,20 @@
 = form_tag Hash.new, id: 'newAccountForm'
   = label '', '', 'E-mail'
   = email_field '', ''
-  = label '', '', 'Password'
-  / = password_field 'account', 'password'
-  = label '', '', 'Password confirmation'
+  = label 'account', 'password', 'Password'
+  = password_field 'account', 'password'
+  = label 'account', 'password_confirmation', 'Password confirmation'
+  = password_field 'account', 'password_confirmation'
   = label '', '', 'Sub-domain name'
   = submit_tag 'Create Account', disabled: true, id: 'btnCreateAccount'
 
 javascript:
   $(document).ready(function () {
     $('#newAccountForm input').on('keyup blur', function () {
-        if ($('#_').val() != '') {
+        if ($('#_').val().length > 0 &&
+            $('#account_password').val().length > 0 &&
+            $('#account_password_confirmation').val().length > 0 &&
+            $('#account_password').val() == $('#account_password_confirmation').val()) {
             $('#btnCreateAccount').prop('disabled', false);
         } else {
             $('#btnCreateAccount').prop('disabled', 'disabled');
