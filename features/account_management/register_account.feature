@@ -9,14 +9,13 @@ User info, used for registrartion - email(login), password, password re-type, su
   	Then user should be redirected to "Create new account" page
     And all fields are visible
     And user should see "Create Account" button is disabled
-    And user should not see "passwords do not match" message
 
   Scenario: user registers new account
   	Given user visits "Create new account" page
   	When user properly fills the form
   	And presses "Create Account" button
   	Then user should be redirected to "Account admin panel" page
-    And user should not see "invalid subdomain" message
+    And user should not see any error messages
 
   Scenario: user enters blank login
     Given user visits "Create new account" page
@@ -65,6 +64,7 @@ User info, used for registrartion - email(login), password, password re-type, su
   Scenario: user re-enters incorrect password
     Given user visits "Create new account" page
   	When user properly fills the form
+    And user should not see "passwords do not match" message
   	And user fills re-enter password field with incorrect password
   	Then user should see "Create Account" button is disabled
   	And user should see "passwords do not match" message
