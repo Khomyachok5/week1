@@ -9,12 +9,14 @@ User info, used for registrartion - email(login), password, password re-type, su
   	Then user should be redirected to "Create new account" page
     And all fields are visible
     And user should see "Create Account" button is disabled
+    And user should not see "passwords do not match" message
 
   Scenario: user registers new account
   	Given user visits "Create new account" page
   	When user properly fills the form
   	And presses "Create Account" button
   	Then user should be redirected to "Account admin panel" page
+    And user should not see "invalid subdomain" message
 
   Scenario: user enters blank login
     Given user visits "Create new account" page
@@ -26,15 +28,7 @@ User info, used for registrartion - email(login), password, password re-type, su
     Given user visits "Create new account" page
   	When user properly fills the form
   	And enters incorrect email
-  	And presses "Create Account" button
-  	Then user should see "invalid email" message
-
-  Scenario: user enters existing login
-    Given user visits "Create new account" page
-  	When user properly fills the form
-  	And enters existing email
-  	And presses "Create Account" button
-  	Then user should see "existing email" message
+    Then user should see "Create Account" button is disabled
 
   Scenario: user enters blank subdomain
     Given user visits "Create new account" page
@@ -67,7 +61,6 @@ User info, used for registrartion - email(login), password, password re-type, su
   	When user properly fills the form
   	And user leaves re-enter password field blank
   	Then user should see "Create Account" button is disabled
-  	And user should see "passwords do not match" message
 
   Scenario: user re-enters incorrect password
     Given user visits "Create new account" page
@@ -76,6 +69,15 @@ User info, used for registrartion - email(login), password, password re-type, su
   	Then user should see "Create Account" button is disabled
   	And user should see "passwords do not match" message
 
+  Scenario: user re-enters incorrect password then correct password
+    Given user visits "Create new account" page
+    When user properly fills the form
+    And user fills re-enter password field with incorrect password
+    And user should see "Create Account" button is disabled
+    And user should see "passwords do not match" message
+    And user properly fills the form
+    Then user should not see "passwords do not match" message
+    And presses "Create Account" button
 
 
 

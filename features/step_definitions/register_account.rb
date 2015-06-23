@@ -44,6 +44,10 @@ Then(/^user should see "(.*?)" message$/) do |message_text|
   expect(page).to have_content(message_text)
 end
 
+Then(/^user should not see "(.*?)" message$/) do |message_text|
+  expect(page).to have_no_content(message_text)
+end
+
 When(/^enters existing email$/) do
   pending # express the regexp above with the code you wish you had
 end
