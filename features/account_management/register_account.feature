@@ -45,9 +45,13 @@ User info, used for registrartion - email(login), password, password re-type, su
   Scenario: user enters existing subdomain
     Given user visits "Create new account" page
     When user properly fills the form
-    And enters existing subdomain
     And presses "Create Account" button
-    Then user should see "existing subdomain" message
+    Then user should be redirected to "Account admin panel" page
+    And user should not see any error messages
+    Then user visits "Create new account" page
+    And user properly fills the form
+    And presses "Create Account" button
+    Then user should see "Subdomain already taken" message
 
   Scenario: user enters blank password
     Given user visits "Create new account" page

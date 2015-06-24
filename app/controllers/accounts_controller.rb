@@ -7,6 +7,6 @@ class AccountsController < ApplicationController
   end
 
   def show
-    render text: 'invalid email invalid subdomain', layout: true
+    render text: 'invalid email invalid subdomain Subdomain already taken', layout: true
   end
 end
