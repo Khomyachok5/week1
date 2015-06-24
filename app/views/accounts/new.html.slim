@@ -1,19 +1,32 @@
-| passwords do not match
+|
 = form_tag Hash.new, id: 'newAccountForm'
   = label '', '', 'E-mail'
   = email_field '', ''
+  br
   = label 'account', 'password', 'Password'
   = password_field 'account', 'password'
+  br
   = label 'account', 'password_confirmation', 'Password confirmation'
-  = password_field 'account', 'password_confirmation'
+  = password_field 'account', 'password_confirmation', onchange: "check()"
+  br
   = label 'account', 'subdomain', 'Sub-domain name'
   = text_field 'account', 'subdomain'
+  br
   = submit_tag 'Create Account', disabled: true, id: 'btnCreateAccount'
 
 javascript:
   function IsEmail(email) {
     var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     return regex.test(email);
+  }
+
+  function check() {
+    if ($('#account_password').val() != $('#account_password_confirmation').val()) {
+      $('#errors').prop('innerHTML', 'passwords do not match');
+    } else {
+        // input is valid -- reset the error message
+         $('#errors').prop('innerHTML', '');
+      }
   }
 
   $(document).ready(function () {
@@ -26,7 +39,9 @@ javascript:
             $('#account_subdomain').val().length > 0) {
             $('#btnCreateAccount').prop('disabled', false);
         } else {
-            $('#btnCreateAccount').prop('disabled', 'disabled');
-        }
+            $('#btnCreateAccount').prop('disabled', true);
+          }
     });
   });
+
+
