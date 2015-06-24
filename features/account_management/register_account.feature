@@ -51,6 +51,7 @@ User info, used for registrartion - email(login), password, password re-type, su
     Then user visits "Create new account" page
     And user properly fills the form
     And presses "Create Account" button
+    Then user should stay on "Create new account" page
     Then user should see "Subdomain already taken" message
 
   Scenario: user enters blank password

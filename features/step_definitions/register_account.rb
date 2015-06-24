@@ -6,6 +6,10 @@ Then(/^user should be redirected to (.*?)$/) do |target_page|
   expect(current_path).to eq(target_page)
 end
 
+Then(/^user should stay on (.*?)$/) do |target_page|
+  expect(current_path).to eq(target_page)
+end
+
 Then(/^all fields are visible$/) do
   find_field('E-mail').visible?
   find_field('Password').visible?
