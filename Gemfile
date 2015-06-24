@@ -49,6 +49,8 @@ group :test do
   gem 'capybara', '~> 2.4.4'
   gem 'cucumber-rails', '~> 1.4.2', require: false
   gem 'poltergeist', '~> 1.6.0'
+  gem 'shoulda-matchers', '~> 2.8.0'
+  gem 'database_cleaner', '~> 1.4.1'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

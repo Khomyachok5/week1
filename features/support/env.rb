@@ -3,6 +3,7 @@ require 'cucumber/rails'
 #require "capybara/cucumber"
 require "capybara/rails"
 require 'capybara/poltergeist'
+require 'database_cleaner'
 
 
 # https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2
@@ -15,3 +16,9 @@ Capybara.register_driver :poltergeist do |app|
   end
   Capybara.default_driver    = :poltergeist
   Capybara.javascript_driver = :poltergeist
+
+
+DatabaseCleaner.strategy = :truncation
+
+# then, whenever you need to clean the DB
+DatabaseCleaner.clean
