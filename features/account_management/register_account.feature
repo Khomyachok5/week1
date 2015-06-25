@@ -9,6 +9,7 @@ User info, used for registrartion - email(login), password, password re-type, su
   	Then user should be redirected to "Create new account" page
     And all fields are visible
     And user should see "Create Account" button is disabled
+    And user should not see any error messages
 
   Scenario: user registers new account
   	Given user visits "Create new account" page
@@ -40,7 +41,7 @@ User info, used for registrartion - email(login), password, password re-type, su
     When user properly fills the form
     And enters incorrect subdomain
     And presses "Create Account" button
-    Then user should see "invalid subdomain" message
+    Then user should see "invalid subdomain" error message
 
   Scenario: user enters existing subdomain
     Given user visits "Create new account" page
@@ -52,7 +53,7 @@ User info, used for registrartion - email(login), password, password re-type, su
     And user properly fills the form
     And presses "Create Account" button
     Then user should stay on "Create new account" page
-    Then user should see "Subdomain already taken" message
+    Then user should see "Subdomain already taken" error message
 
   Scenario: user enters blank password
     Given user visits "Create new account" page
@@ -72,16 +73,16 @@ User info, used for registrartion - email(login), password, password re-type, su
     And user should not see "passwords do not match" message
   	And user fills re-enter password field with incorrect password
   	Then user should see "Create Account" button is disabled
-  	And user should see "passwords do not match" message
+  	And user should see "passwords do not match" error message
 
   Scenario: user re-enters incorrect password then correct password
     Given user visits "Create new account" page
     When user properly fills the form
     And user fills re-enter password field with incorrect password
     And user should see "Create Account" button is disabled
-    And user should see "passwords do not match" message
+    And user should see "passwords do not match" error message
     And user properly fills the form
-    Then user should not see "passwords do not match" message
+    Then user should not see "passwords do not match" error message
     And presses "Create Account" button
 
 

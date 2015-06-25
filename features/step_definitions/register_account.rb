@@ -44,12 +44,16 @@ When(/^enters incorrect email$/) do
   fill_in('E-mail', with: 'test#user,com')
 end
 
-Then(/^user should see "(.*?)" message$/) do |message_text|
-  expect(page).to have_content(message_text)
+Then(/^user should see "(.*?)" error message$/) do |message_text|
+  expect(page.find('#errors')).to have_content(message_text)
 end
 
 Then(/^user should not see "(.*?)" message$/) do |message_text|
   expect(page).to have_no_content(message_text)
+end
+
+Then(/^user should not see "(.*?)" error message$/) do |message_text|
+  expect(page.find('#errors')).to have_no_content(message_text)
 end
 
 Then(/^user should not see any error messages$/) do
