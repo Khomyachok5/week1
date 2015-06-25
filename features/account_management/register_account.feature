@@ -41,6 +41,7 @@ User info, used for registrartion - email(login), password, password re-type, su
     When user properly fills the form
     And enters incorrect subdomain
     And presses "Create Account" button
+    Then user should stay on "Create new account" page
     Then user should see "invalid subdomain" error message
 
   Scenario: user enters existing subdomain
