@@ -25,7 +25,7 @@ When(/^user properly fills the form$/) do
   fill_in('E-mail', with: 'test@user.com')
   fill_in('Password', with: '123456qwe')
   fill_in('Password confirmation', with: '123456qwe')
-  fill_in('Sub-domain name', with: 'test_subdomain')
+  fill_in('Sub-domain name', with: 'test1subdomain')
 end
 
 When(/^presses "(.*?)" button$/) do |btn_label|

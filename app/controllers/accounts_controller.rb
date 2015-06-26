@@ -3,17 +3,18 @@ class AccountsController < ApplicationController
   end
 
   def create
-    if Account.find_by subdomain: params[:account][:subdomain]
-      redirect_to '/accounts/new'
-    else
-      account = Account.new
-      account.subdomain = params[:account][:subdomain]
-      account.save
+    account = Account.new
+    account.subdomain = params[:account][:subdomain]
+
+    if account.save
       redirect_to '/admin'
+    else
+      flash.alert = account.errors.full_messages.join('<br />')
+      redirect_to '/accounts/new'
     end
   end
 
   def show
-    render text: 'invalid email invalid subdomain', layout: true
+    render text: 'invalid email', layout: true
   end
 end

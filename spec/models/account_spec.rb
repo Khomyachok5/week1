@@ -5,5 +5,9 @@ RSpec.describe Account, type: :model do
     variable = Account.create(subdomain: "MySuperSD")
     expect(Account.find_by subdomain: "MySuperSD").to eq(variable)
   end
-  it { is_expected.to validate_uniqueness_of(:subdomain) }
+  it { is_expected.to validate_uniqueness_of(:subdomain).with_message('already taken') }
+  it { is_expected.to allow_value('333abcz').for(:subdomain) }
+  it { is_expected.to_not allow_value('123!', '!abc').for(:subdomain).with_message('invalid subdomain') }
+  it { is_expected.to validate_length_of(:subdomain).is_at_least(2).is_at_most(20).with_message('invalid subdomain') }
+
 end
