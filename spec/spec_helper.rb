@@ -16,7 +16,46 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+# require "capybara/rspec"
+# require "capybara"
+# require "capybara/rails"
+# require 'capybara/poltergeist'
+
+# Capybara.register_driver :poltergeist do |app|
+#     Capybara::Poltergeist::Driver.new(
+#       app,
+#       window_size: [1280, 1024]#,
+#       #debug:       true
+#     )
+#   end
+#   Capybara.default_driver    = :poltergeist
+#   Capybara.javascript_driver = :poltergeist
+
+require 'capybara/poltergeist'
+require 'database_cleaner'
+Capybara.default_driver    = :poltergeist
+
+#DatabaseCleaner.strategy = :truncation
+
+# then, whenever you need to clean the DB
+#DatabaseCleaner.clean
+
+
 RSpec.configure do |config|
+
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
+  
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
