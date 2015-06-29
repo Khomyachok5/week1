@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.feature 'user_management.user_login', :type => :feature do
   background do
 	visit "/"
-	Account.create(email: 'test1@user.com', password: '123456qwe' subdomain: 'MySuperSD')
-	Account.create(email: 'test2@user.com', password: '123456asd' subdomain: 'MySuperSD1')
+	Account.create(email: 'test1@user.com', password: '123456qwe', subdomain: 'MySuperSD')
+	Account.create(email: 'test2@user.com', password: '123456asd', subdomain: 'MySuperSD1')
   end
 
   scenario "User visits login page" do
