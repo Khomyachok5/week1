@@ -35,12 +35,27 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 
    scenario 'user opens password reset page' do
 	click_link "Re-set password"
-	expect_page_url_to_be '/resetpassword'
+	expect_page_url_to_be '/forgotpassword'
 	find_field('E-mail').visible?
 	find_button("Email instructions", disabled: true)
    end
 
+   scenario 'user enters valid email to re-set password form' do
+	click_link "Re-set password"
+	expect_page_url_to_be '/forgotpassword'
+	find_field('E-mail').visible?
+	find_button("Email instructions", disabled: true)
+	fill_in('E-mail', with: 'test1@user.com')
+	find_button("Email instructions")
+   end
 
+   scenario 'user sends password re-set instructions' do
+	click_link "Re-set password"
+	expect_page_url_to_be '/forgotpassword'
+	fill_in('E-mail', with: 'test1@user.com')
+	click_button("Email instructions")
+	expect(page).to have_content('instructions were sent')
+   end
 
 
 	def expect_page_url_to_be(url)
