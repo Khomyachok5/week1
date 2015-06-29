@@ -1,27 +1,23 @@
 require "rails_helper"
 require 'spec_helper'
 
-RSpec.feature 'User logs in', :type => :feature do
-  scenario "User creates a new widget" do
-    visit "/accounts/new"
+RSpec.feature 'user_management.user_login', :type => :feature do
 
-    fill_in "E-mail", :with => "qwe@asd.com"
-    fill_in "Password", :with => "qweqweqwe"
-    fill_in "Password confirmation", :with => "qweqweqwe"
-    fill_in "Sub-domain name", :with => "qweqweqwedomain"
-    click_button "Create Account"
 
-    expect(current_path).to eq("/admin")
+  scenario "User visits login page" do
+    visit "/"
+
+	find_field('E-mail').visible?
+	find_field('Password').visible?
+	find_button("Log in")
   end
-end
 
-
-# RSpec.feature 'User logs in', :type => :feature do
-
-#   scenario 'user visits login page' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
+   scenario 'user logs in with correct creds' do
+	visit '/'
+	fill_in('E-mail', with: 'test@user.com')
+	fill_in('Password', with: '123456qwe')
+	click_button "Log in"
+   end
 
 #   scenario 'user logs in with correct creds' do
 #   	visit '/'
@@ -109,3 +105,4 @@ end
 #   end
 
 #  end
+end
