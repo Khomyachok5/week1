@@ -19,8 +19,8 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 	fill_in('E-mail', with: 'test1@user.com')
 	fill_in('Password', with: '123456qwe')
 	click_button "Log in"
-	expect(current_path).to eq('/admin')
-	expect(page).to have_content('Hello test@user.com')
+	expect_page_url_to_be '/admin'
+	expect(page).to have_content('Hello test1@user.com')
 	expect(page).to have_content('Subdomain MySuperSD')
    end
 
@@ -28,104 +28,23 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 	fill_in('E-mail', with: 'test@user.com')
 	fill_in('Password', with: '123456qwe')
 	click_button "Log in"
-	expect(current_path).to eq('/')
+	expect_page_url_to_be '/'
 	expect(page.find('#errors')).to have_content('Incorrect email/password')
 	find_link('Re-set password').visible?
    end
 
- #   scenario 'user logs in with correct creds' do
-	# fill_in('E-mail', with: 'test@user.com')
-	# fill_in('Password', with: '123456qwe')
-	# click_button "Log in"
-	# expect(current_path).to eq('/admin')
-	# expect(page).to have_content('Hello test@user.com')
-	# expect(page).to have_content('Subdomain MySuperSD')
- #   end
+   scenario 'user opens password reset page' do
+	click_link "Re-set password"
+	expect_page_url_to_be '/resetpassword'
+	find_field('E-mail').visible?
+	find_button("Email instructions", disabled: true)
+   end
 
-#   scenario 'user logs in with correct creds' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
 
-#   scenario 'user logs in with incorrect login' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
 
-#   scenario 'user logs in with blank login' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
 
-#   scenario 'user logs in with incorrect' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user logs in with blank password' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user changes password' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user changes password/enters blank password' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user changes password/re-enters blank password' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user changes password/re-enters incorrect password' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user opens password reset page' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user receives password reset instuctions' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user logs in ignoring password reset instructions' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user re-sets password' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user enters blank password on password reset page' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user re-enters incorrect password on password reset page' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user re-enters blank password on password reset page  ' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#   scenario 'user receives 2 password reset instuctions and follows link from 1st letter' do
-#   	visit '/'
-#   	pending #do some actions
-#   end
-
-#  end
+	def expect_page_url_to_be(url)
+		expect(current_path).to eq(url)
+	end
 end
+
