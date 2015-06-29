@@ -4,3 +4,4 @@ Visitor should see start page that contains a link to new account registration p
   Scenario: visitor visits Week1 Start page
 	Given visitor opens start page
 	Then visitor should see link to new account registration page
+	And visitor should see login form
