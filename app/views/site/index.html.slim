@@ -1,1 +1,11 @@
 = link_to "Create new account", accounts_new_path
+br
+= link_to "Re-set password", controller: "accounts", action: "reset"
+= form_tag login_path, id: 'LoginForm'
+  = label 'login', 'email', 'E-mail'
+  = email_field 'login', 'email'
+  br
+  = label 'login', 'password', 'Password'
+  = password_field 'login', 'password'
+  br
+  = submit_tag 'Log in', disabled: false, id: 'btnLogIn'

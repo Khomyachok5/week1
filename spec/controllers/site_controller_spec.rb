@@ -9,4 +9,3 @@ RSpec.describe SiteController, type: :controller do
     end
   end
 end
-

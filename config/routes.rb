@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   get  'accounts/new', to: 'accounts#new'
   post 'accounts/new', to: 'accounts#create'
   get  'admin', to: 'accounts#show'
+  post '/login', to: 'accounts#login'
+  get  '/forgotpassword', to: 'accounts#reset'
+  post '/forgotpassword', to: 'accounts#forgotpassword'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

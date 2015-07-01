@@ -1,0 +1,22 @@
+= form_tag Hash.new, id: 'PWResetForm'
+  = label 'login', 'email', 'E-mail'
+  br
+  = email_field 'login', 'email'
+  = submit_tag 'Email instructions', disabled: true, id: 'btnReset'
+
+javascript:
+  function IsEmail(email) {
+    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    return regex.test(email);
+  }
+
+  $(document).ready(function () {
+    $('#PWResetForm input').on('keyup blur', function () {
+        if ($('#login_email').val().length > 0 &&
+            IsEmail($('#login_email').val()))  {
+            $('#btnReset').prop('disabled', false);
+        } else {
+            $('#btnReset').prop('disabled', true);
+          }
+    });
+  });
