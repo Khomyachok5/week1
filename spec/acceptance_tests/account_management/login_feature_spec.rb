@@ -57,6 +57,40 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 	expect(page).to have_content('instructions were sent')
    end
 
+   scenario 'user sends password re-set instructions to non-existing email' do
+	click_link "Re-set password"
+	expect_page_url_to_be '/forgotpassword'
+	fill_in('E-mail', with: 'test1@user.ru')
+	click_button("Email instructions")
+	expect_page_url_to_be '/forgotpassword'
+	find_field('E-mail').visible?
+	find_button("Email instructions", disabled: true)
+	expect(page).to have_content("Couldn't find account for test1@user.ru'")
+   end
+
+   scenario 'user receives password re-set instructions' do
+	click_link "Re-set password"
+	expect_page_url_to_be '/forgotpassword'
+	fill_in('E-mail', with: 'test1@user.com')
+	click_button("Email instructions")
+
+    expect(unread_emails_for("test1@user.com").size).to eql 1
+    open_last_email_for("test1@user.com")
+    expect(current_email).to have_subject(/Password re-set instructions for Week1/)
+    expect(current_email).to have_body_text(/Follow the link to re-set your password/)
+   end
+
+   scenario 'password re-set instructions contain link to password re-set page' do
+	click_link "Re-set password"
+	expect_page_url_to_be '/forgotpassword'
+	fill_in('E-mail', with: 'test1@user.com')
+	click_button("Email instructions")
+
+    open_last_email_for("test1@user.com")
+    url = /href=\"([^"]*)\"/.match(current_email.body.to_s)[1]
+    expect(url.length).to be > 1
+   end
+
 
 	def expect_page_url_to_be(url)
 		expect(current_path).to eq(url)

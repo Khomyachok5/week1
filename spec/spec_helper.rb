@@ -34,6 +34,8 @@
 
 require 'capybara/poltergeist'
 require 'database_cleaner'
+
+
 Capybara.default_driver    = :poltergeist
 
 #DatabaseCleaner.strategy = :truncation
@@ -131,4 +133,8 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.include(EmailSpec::Helpers)
+  config.include(EmailSpec::Matchers)
+
 end
