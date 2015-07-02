@@ -34,6 +34,7 @@
 
 require 'capybara/poltergeist'
 require 'database_cleaner'
+require "email_spec"
 
 
 Capybara.default_driver    = :poltergeist
