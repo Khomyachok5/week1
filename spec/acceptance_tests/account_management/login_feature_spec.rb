@@ -71,7 +71,8 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 	expect_page_url_to_be '/forgotpassword'
 	find_field('E-mail').visible?
 	find_button("Email instructions", disabled: true)
-	expect(page).to have_content("Couldn't find account for test1@user.ru'")
+	expect(page).to have_content("Couldn't find account for test1@user.ru")
+	expect(unread_emails_for("test1@user.ru").size).to eql 0
   end
 
   context "User has sent re-set instructions email" do
@@ -123,16 +124,28 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 		end
 
 		scenario 'user logs in with new password' do
-			fill_in('Password', with: '123456qwe_new2')
-			fill_in('Password confirmation', with: '123456qwe_new2')
+			fill_in('Password', with: '123456qwe_new')
+			fill_in('Password confirmation', with: '123456qwe_new')
 			click_button("Set password")
 			expect_page_url_to_be '/'
 			fill_in('E-mail', with: 'test1@user.com')
-			fill_in('Password', with: '123456qwe_new2')
+			fill_in('Password', with: '123456qwe_new')
 			click_button "Log in"
 			expect_page_url_to_be '/admin'
 			expect(page).to have_content('Hello test1@user.com')
 			expect(page).to have_content('Subdomain MySuperSD')
+		end
+
+		scenario 'user tries to logs in with old password' do
+			fill_in('Password', with: '123456qwe_new')
+			fill_in('Password confirmation', with: '123456qwe_new')
+			click_button("Set password")
+			expect_page_url_to_be '/'
+			fill_in('E-mail', with: 'test1@user.com')
+			fill_in('Password', with: '123456qwe')
+			click_button "Log in"
+			expect_page_url_to_be '/'
+			expect(page.find('#errors')).to have_content('Incorrect email/password')
 		end
 	end
   end
