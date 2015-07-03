@@ -19,7 +19,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 	fill_in('E-mail', with: 'test1@user.com')
 	fill_in('Password', with: '123456qwe')
 	click_button "Log in"
-	expect_page_url_to_be '/admin'
+	expect_page_url_to_be 'http://lvh.me:3000/admin'
 	expect(page).to have_content('Hello test1@user.com')
 	expect(page).to have_content('Subdomain MySuperSD')
   end
@@ -70,13 +70,11 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 
   context "User has sent re-set instructions email" do
 	before(:each) do
+		reset_mailer
 		click_link "Re-set password"
 		expect_page_url_to_be '/forgotpassword'
 		fill_in('E-mail', with: 'test1@user.com')
 		click_button("Email instructions")
-	end
-	after(:each) do
-		reset_mailer
 	end
 	scenario 'user receives password re-set instructions' do
 		expect(unread_emails_for("test1@user.com").size).to eql 1
@@ -113,9 +111,14 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 		fill_in('Password', with: '123456qwe_new')
 		fill_in('Password confirmation', with: '123456qwe_new')
 		click_button("Set password")
+		expect_page_url_to_be '/admin'
 	end
   end
   end
+
+	scenario 'dummy_scenario' do
+		visit '/'
+	end
 
 	def expect_page_url_to_be(url)
 		expect(current_path).to eq(url)
