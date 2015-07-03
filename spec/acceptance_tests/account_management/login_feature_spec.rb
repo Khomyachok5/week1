@@ -15,11 +15,17 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 	find_button("Log in")
   end
 
+  scenario "User tries to visit admin page without logging in" do
+	visit '/admin'
+	expect_page_url_to_be '/'
+	expect(page.find('#errors')).to have_content('Log in to manage your store')
+  end
+
   scenario 'user logs in with correct creds' do
 	fill_in('E-mail', with: 'test1@user.com')
 	fill_in('Password', with: '123456qwe')
 	click_button "Log in"
-	expect_page_url_to_be 'http://lvh.me:3000/admin'
+	expect_page_url_to_be '/admin'
 	expect(page).to have_content('Hello test1@user.com')
 	expect(page).to have_content('Subdomain MySuperSD')
   end
@@ -98,22 +104,37 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 		find_button("Set password", disabled: true)
 	end
 
-  context "User has received re-set instructions email and followed password re-set link from letter" do
-	before(:each) do
-		open_last_email_for("test1@user.com")
-		url = /href=\"([^"]*)\"/.match(current_email.body.to_s)[1]
-		visit url
-		find_field('Password').visible?
-		find_field('Password confirmation').visible?
-		find_button("Set password", disabled: true)
+	context "User has received re-set instructions email and followed password re-set link from letter" do
+		before(:each) do
+			open_last_email_for("test1@user.com")
+			url = /href=\"([^"]*)\"/.match(current_email.body.to_s)[1]
+			visit url
+			find_field('Password').visible?
+			find_field('Password confirmation').visible?
+			find_button("Set password", disabled: true)
+		end
+
+		scenario 'user sets new password' do
+			fill_in('Password', with: '123456qwe_new')
+			fill_in('Password confirmation', with: '123456qwe_new')
+			click_button("Set password")
+			expect_page_url_to_be '/'
+			expect(page).to have_content('Password successfully changed')
+		end
+
+		scenario 'user logs in with new password' do
+			fill_in('Password', with: '123456qwe_new2')
+			fill_in('Password confirmation', with: '123456qwe_new2')
+			click_button("Set password")
+			expect_page_url_to_be '/'
+			fill_in('E-mail', with: 'test1@user.com')
+			fill_in('Password', with: '123456qwe_new2')
+			click_button "Log in"
+			expect_page_url_to_be '/admin'
+			expect(page).to have_content('Hello test1@user.com')
+			expect(page).to have_content('Subdomain MySuperSD')
+		end
 	end
-	scenario 'user sets new password' do
-		fill_in('Password', with: '123456qwe_new')
-		fill_in('Password confirmation', with: '123456qwe_new')
-		click_button("Set password")
-		expect_page_url_to_be '/admin'
-	end
-  end
   end
 
 	scenario 'dummy_scenario' do
