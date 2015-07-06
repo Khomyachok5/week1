@@ -35,6 +35,8 @@
 require 'capybara/poltergeist'
 require 'database_cleaner'
 require "email_spec"
+require "./spec/acceptance_tests/common_methods.rb"
+
 
 
 Capybara.default_driver    = :poltergeist
@@ -47,6 +49,7 @@ Capybara.default_driver    = :poltergeist
 
 RSpec.configure do |config|
 
+  config.include Common_methods
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
