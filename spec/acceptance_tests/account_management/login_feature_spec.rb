@@ -172,10 +172,6 @@ RSpec.feature 'user_management.user_login', :type => :feature do
     end
   end
 
-  scenario 'dummy_scenario' do
-    visit '/'
-  end
-
 end
 
 
