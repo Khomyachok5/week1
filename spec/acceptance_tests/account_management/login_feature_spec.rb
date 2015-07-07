@@ -1,6 +1,3 @@
-require "rails_helper"
-require 'spec_helper'
-
 RSpec.feature 'user_management.user_login', :type => :feature do
   background do
     visit "/"
@@ -21,18 +18,14 @@ RSpec.feature 'user_management.user_login', :type => :feature do
   end
 
   scenario 'user logs in with correct creds' do
-    fill_in('E-mail', with: 'test1@user.com')
-    fill_in('Password', with: '123456qwe')
-    click_button "Log in"
+    log_in_with('test1@user.com','123456qwe')
     expect_page_url_to_be '/admin'
     expect(page).to have_content('Hello test1@user.com')
     expect(page).to have_content('Subdomain MySuperSD')
   end
 
-  scenario 'user logs in with incorrect login' do
-    fill_in('E-mail', with: 'test@user.com')
-    fill_in('Password', with: '123456qwe')
-    click_button "Log in"
+  scenario 'user logs in with non-existing login' do
+    log_in_with('test@user.com', '123456qwe')
     expect_page_url_to_be '/'
     expect_error('Incorrect email/password')
     find_link('Re-set password').visible?
@@ -105,6 +98,20 @@ RSpec.feature 'user_management.user_login', :type => :feature do
       find_button("Set password", disabled: true)
     end
 
+    scenario 'user receives 2 password reset instuctions and follows link from 1st letter' do
+      open_last_email_for("test1@user.com")
+      #get url from email
+      url = /href=\"([^"]*)\"/.match(current_email.body.to_s)[1]
+      #then send new email with password reset instuctions
+      visit "/"
+      click_link "Re-set password"
+      expect_page_url_to_be '/forgotpassword'
+      fill_in('E-mail', with: 'test1@user.com')
+      click_button("Email instructions")
+      #try to follow link fromm 1st email
+      visit url
+    end
+
     context "User has received re-set instructions email and followed password re-set link from letter" do
       before(:each) do
         open_last_email_for("test1@user.com")
@@ -135,11 +142,11 @@ RSpec.feature 'user_management.user_login', :type => :feature do
         find_button("Set password", disabled: true)
       end
 
-      scenario 'user re-enters blank password' do
+      scenario 'user re-enters incorrect password' do
         fill_in('Password', with: '123456qwe_new')
         fill_in('Password confirmation', with: '123456qwe_new123')
         find_button("Set password", disabled: true)
-        expect_error('Incorrect email/password')
+        expect_error('passwords do not match')
       end
 
       scenario 'user logs in with new password' do
@@ -147,9 +154,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
         fill_in('Password confirmation', with: '123456qwe_new')
         click_button("Set password")
         expect_page_url_to_be '/'
-        fill_in('E-mail', with: 'test1@user.com')
-        fill_in('Password', with: '123456qwe_new')
-        click_button "Log in"
+        log_in_with('test1@user.com','123456qwe_new')
         expect_page_url_to_be '/admin'
         expect(page).to have_content('Hello test1@user.com')
         expect(page).to have_content('Subdomain MySuperSD')
@@ -160,9 +165,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
         fill_in('Password confirmation', with: '123456qwe_new')
         click_button("Set password")
         expect_page_url_to_be '/'
-        fill_in('E-mail', with: 'test1@user.com')
-        fill_in('Password', with: '123456qwe')
-        click_button "Log in"
+        log_in_with('test1@user.com','123456qwe')
         expect_page_url_to_be '/'
         expect_error('Incorrect email/password')
       end
