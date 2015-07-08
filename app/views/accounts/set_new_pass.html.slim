@@ -1,0 +1,17 @@
+= form_tag update_pass_path
+  = label :account, :password, 'Password'
+  = password_field :account, :password
+  br
+  = label :account, :password_confirmation, 'Password confirmation'
+  = password_field :account, :password_confirmation
+  br
+  = submit_tag 'Set password', disabled: true, id: :btnPassReset
+
+javascript:
+  $('#account_password_confirmation').change(function() {
+    if ($('#account_password').val() != $('#account_password_confirmation').val()) {
+      $('#btnPassReset').prop('disabled', true);
+    } else {
+      $('#btnPassReset').prop('disabled', false);
+    }
+  });

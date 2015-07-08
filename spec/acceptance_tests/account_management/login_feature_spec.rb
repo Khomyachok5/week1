@@ -92,14 +92,14 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 
 	scenario 'password re-set instructions contain link to password re-set page' do
 		open_last_email_for("test1@user.com")
-		url = /href=\"([^"]*)\"/.match(current_email.body.to_s)[1]
+		url = /href=\"([^"]*)\"/.match(current_email.html_part.body.to_s)[1]
 		expect(url.length).to be > 1
 	end
 
 	scenario 'user follows password re-set link from letter' do
 		open_last_email_for("test1@user.com")
-		url = /href=\"([^"]*)\"/.match(current_email.body.to_s)[1]
-		visit url
+		url = /href=\"([^"]*)\"/.match(current_email.html_part.body.to_s)[1]
+		visit URI(url).path
 		find_field('Password').visible?
 		find_field('Password confirmation').visible?
 		find_button("Set password", disabled: true)
@@ -108,8 +108,8 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 	context "User has received re-set instructions email and followed password re-set link from letter" do
 		before(:each) do
 			open_last_email_for("test1@user.com")
-			url = /href=\"([^"]*)\"/.match(current_email.body.to_s)[1]
-			visit url
+			url = /href=\"([^"]*)\"/.match(current_email.html_part.body.to_s)[1]
+			visit URI(url).path
 			find_field('Password').visible?
 			find_field('Password confirmation').visible?
 			find_button("Set password", disabled: true)

@@ -54,6 +54,7 @@ RSpec.configure do |config|
   end
 
   config.around(:each) do |example|
+    ActionMailer::Base.deliveries.clear
     DatabaseCleaner.cleaning do
       example.run
     end
