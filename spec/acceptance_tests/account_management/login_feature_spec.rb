@@ -9,7 +9,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
     find_field('E-mail').visible?
     find_field('Password').visible?
     find_button("Log in")
-    end
+  end
 
   scenario "User tries to visit admin page without logging in" do
     visit '/admin'
@@ -22,6 +22,23 @@ RSpec.feature 'user_management.user_login', :type => :feature do
     expect_page_url_to_be '/admin'
     expect(page).to have_content('Hello test1@user.com')
     expect(page).to have_content('Subdomain MySuperSD')
+  end
+
+  scenario 'user logs out' do
+    log_in_with('test1@user.com','123456qwe')
+    expect_page_url_to_be '/admin'
+    click_link('Log out')
+    expect_page_url_to_be '/'
+  end
+
+  scenario 'logged out user cannot visit admin page' do
+    log_in_with('test1@user.com','123456qwe')
+    expect_page_url_to_be '/admin'
+    click_link('Log out')
+    expect_page_url_to_be '/'
+    visit '/admin'
+    expect_page_url_to_be '/'
+    expect_error('Log in to manage your store')
   end
 
   scenario 'user logs in with non-existing login' do
