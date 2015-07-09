@@ -9,6 +9,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
     find_field('E-mail').visible?
     find_field('Password').visible?
     find_button("Log in")
+    expect_no_errors
   end
 
   scenario "User tries to visit admin page without logging in" do
@@ -22,6 +23,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
     expect_page_url_to_be '/admin'
     expect(page).to have_content('Hello test1@user.com')
     expect(page).to have_content('Subdomain MySuperSD')
+    expect_no_errors
   end
 
   scenario 'user logs out' do
@@ -109,7 +111,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
     scenario 'user follows password re-set link from letter' do
       open_last_email_for("test1@user.com")
       url = /href=\"([^"]*)\"/.match(current_email.html_part.body.to_s)[1]
-      visit URI(url).path
+      visit url
       find_field('Password').visible?
       find_field('Password confirmation').visible?
       find_button("Set password", disabled: true)
@@ -126,14 +128,14 @@ RSpec.feature 'user_management.user_login', :type => :feature do
       fill_in('E-mail', with: 'test1@user.com')
       click_button("Email instructions")
       #try to follow link fromm 1st email
-      visit URI(url).path
+      visit url
     end
 
     context "User has received re-set instructions email and followed password re-set link from letter" do
       before(:each) do
         open_last_email_for("test1@user.com")
         url = /href=\"([^"]*)\"/.match(current_email.html_part.body.to_s)[1]
-        visit URI(url).path
+        visit url
         find_field('Password').visible?
         find_field('Password confirmation').visible?
         find_button("Set password", disabled: true)

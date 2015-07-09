@@ -26,6 +26,11 @@ require 'spec_helper'
 
 
 Capybara.default_driver    = :poltergeist
+#Capybara.default_driver    = :selenium
+
+Capybara.server_port = 8080
+Capybara.server_host = 'localhost'
+
 
 RSpec.configure do |config|
 
