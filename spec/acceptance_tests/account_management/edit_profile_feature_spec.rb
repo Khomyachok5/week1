@@ -16,6 +16,7 @@ RSpec.feature 'user_management.edit_profile', :type => :feature do
       find_field('Password').visible?
       find_field('Password confirmation').visible?
       find_button("Change password", disabled: true)
+      expect_no_errors
     end
 
     scenario 'logged out user cannot visit edit profile page' do
@@ -32,6 +33,7 @@ RSpec.feature 'user_management.edit_profile', :type => :feature do
       click_button("Change password")
       expect_page_url_to_be '/editprofile'
       expect(page).to have_content('Password successfully changed')
+      expect_no_errors
     end
 
     scenario 'user enters blank password' do
