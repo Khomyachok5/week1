@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   post '/forgotpassword', to: 'accounts#forgotpassword'
   get  '/setnewpass', to: 'accounts#set_new_pass', as: 'set_new_pass'
   post '/setnewpass', to: 'accounts#update_pass',  as: 'update_pass'
+  get '/editprofile', to: 'accounts#edit',  as: 'edit_profile'
+  post '/editprofile', to: 'accounts#update', as: 'accounts_update'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

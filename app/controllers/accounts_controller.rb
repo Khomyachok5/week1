@@ -2,6 +2,13 @@ class AccountsController < ApplicationController
   def new
   end
 
+  def edit
+    flash[:alert] = 'Log in to manage your store'
+    unless session[:UserLoggedIn]
+      redirect_to root_path
+    end
+  end
+
   def create
     session[:UserLoggedIn] = true
     account = Account.new params.require(:account).permit(:subdomain, :email, :password)
@@ -15,15 +22,14 @@ class AccountsController < ApplicationController
 
   def show
     flash[:alert] = 'Log in to manage your store'
-    if session[:UserLoggedIn]
-      render text: "", layout: true
-    else
+    unless session[:UserLoggedIn]
       redirect_to root_path
     end
   end
 
   def login
     session[:UserLoggedIn] = true
+    session[:email] = params[:login][:email]
     current_account = Account.find_by email: params[:login][:email]
     if current_account && current_account.password == params[:login][:password]
       flash[:notice] = "Hello #{current_account.email} Subdomain #{current_account.subdomain}"
@@ -49,5 +55,10 @@ class AccountsController < ApplicationController
     Account.find_by(email: session[:email]).update(password: params[:account][:password])
     flash[:notice] = 'Password successfully changed'
     redirect_to root_path
+  end
+
+  def update
+    Account.find_by(email: session[:email]).update(password: params[:account][:password])
+    redirect_to edit_profile_path
   end
 end

@@ -2,6 +2,65 @@ require 'rails_helper'
 
 RSpec.describe AccountsController, type: :controller do
 
+  context "account exists" do
+    let(:email) {'blahblah@controller.ru'}
+    before (:each) do
+      Account.create!(subdomain: "MySuperSD", email: email, password: 'abcdefg')
+    end
+
+    context 'with session email set' do
+      before(:each) { session[:email] = email }
+
+      describe "POST #update" do
+        let(:pass) {'abcdefg123'}
+        before (:each) do
+          post :update, account: {password: pass}
+        end
+
+        it "redirects to #edit" do
+          expect(subject).to redirect_to action: :edit
+        end
+
+        it "updates password" do
+          expect(Account.find_by(email: email).password).to eq(pass)
+        end
+      end
+    end
+  end
+
+  context "user successfully logged in" do
+    before (:each) do
+      session[:UserLoggedIn] = true
+    end
+
+    describe "GET #edit" do
+      before (:each) do
+        get :edit
+      end
+
+      it "returns http success" do
+        expect(response).to have_http_status(:success)
+      end
+    end
+  end
+
+
+  context "user is not logged in" do
+    describe "GET #edit" do
+      before (:each) do
+        get :edit
+      end
+
+      it "redirects to site#index" do
+        expect(subject).to redirect_to controller: :site, action: :index
+      end
+
+      it "sets error message in flash" do
+        expect(subject).to set_flash[:alert].to('Log in to manage your store')
+      end
+    end
+  end
+
   describe "GET #new" do
     it "returns http success" do
       get :new
@@ -93,6 +152,10 @@ RSpec.describe AccountsController, type: :controller do
       it "returns http success" do
         expect(response).to have_http_status(:success)
       end
+
+      it "renders show template" do
+        expect(response).to render_template(:show)
+      end
     end
   end
 
@@ -162,9 +225,10 @@ RSpec.describe AccountsController, type: :controller do
 
   describe "POST #login" do
     context "with correct credentials" do
+      let(:email) {'megamail@mu.mu'}
       before (:each) do
-        Account.create!(subdomain: "MySuperSD", email: "megamail@mu.mu", password: "securePWD")
-        post :login, login: {email: "megamail@mu.mu", password: "securePWD"}
+        Account.create!(subdomain: "MySuperSD", email: email, password: "securePWD")
+        post :login, login: {email: email, password: "securePWD"}
       end
 
       it "redirects to #show" do
@@ -173,6 +237,10 @@ RSpec.describe AccountsController, type: :controller do
 
       it "logs account in" do
         expect(session[:UserLoggedIn]).to be_truthy
+      end
+
+      it "sets an appropriate session e-mail" do
+        expect(subject).to set_session[:email].to(email)
       end
     end
 

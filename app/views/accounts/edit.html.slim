@@ -1,8 +1,10 @@
-= form_tag update_pass_path
+| Password successfully changed
+= form_tag accounts_update_path
+  = link_to 'Log out', root_path
   = label :account, :password, 'Password'
   = password_field :account, :password
   br
   = label :account, :password_confirmation, 'Password confirmation'
   = password_field :account, :password_confirmation
   br
-  = submit_tag 'Set password', disabled: true, id: :btnSubmit
+  = submit_tag 'Change password', disabled: true, id: 'btnSubmit'
