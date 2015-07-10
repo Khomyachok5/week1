@@ -1,16 +1,14 @@
 class AccountsController < ApplicationController
+  before_action :authorize!, only: [:edit, :show]
+
   def new
   end
 
   def edit
-    unless session[:UserLoggedIn]
-      flash[:alert] = 'Log in to manage your store'
-      redirect_to root_path
-    end
   end
 
   def create
-    session[:UserLoggedIn] = true
+    sign_in
     account = Account.new params.require(:account).permit(:subdomain, :email, :password)
     if account.save
       redirect_to admin_path
@@ -21,14 +19,10 @@ class AccountsController < ApplicationController
   end
 
   def show
-    unless session[:UserLoggedIn]
-      flash[:alert] = 'Log in to manage your store'
-      redirect_to root_path
-    end
   end
 
   def login
-    session[:UserLoggedIn] = true
+    sign_in
     session[:email] = params[:login][:email]
     current_account = Account.find_by email: params[:login][:email]
     if current_account && current_account.password == params[:login][:password]
@@ -60,5 +54,17 @@ class AccountsController < ApplicationController
   def update
     Account.find_by(email: session[:email]).update(password: params[:account][:password])
     redirect_to edit_profile_path
+  end
+
+  private
+
+  def sign_in
+    session[:UserLoggedIn] = true
+  end
+
+  def authorize!
+    return if session[:UserLoggedIn]
+    flash[:alert] = 'Log in to manage your store'
+    redirect_to root_path
   end
 end
