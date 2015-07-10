@@ -1,6 +1,6 @@
 = link_to "Create new account", accounts_new_path
 br
-= link_to "Re-set password", controller: "accounts", action: "reset"
+= link_to "Re-set password", forgotpassword_path
 = form_tag login_path, id: 'LoginForm'
   = label 'login', 'email', 'E-mail'
   = email_field 'login', 'email'

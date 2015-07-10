@@ -13,10 +13,10 @@ class AccountsController < ApplicationController
     session[:UserLoggedIn] = true
     account = Account.new params.require(:account).permit(:subdomain, :email, :password)
     if account.save
-      redirect_to '/admin'
+      redirect_to admin_path
     else
       flash.alert = account.errors.full_messages.join('<br />')
-      redirect_to '/accounts/new'
+      redirect_to accounts_new_path
     end
   end
 
