@@ -41,6 +41,10 @@ RSpec.describe AccountsController, type: :controller do
       it "returns http success" do
         expect(response).to have_http_status(:success)
       end
+
+      it "doesn't set flash to an error" do
+        expect(flash[:alert]).to be_nil
+      end
     end
   end
 
@@ -155,6 +159,10 @@ RSpec.describe AccountsController, type: :controller do
 
       it "renders show template" do
         expect(response).to render_template(:show)
+      end
+
+      it "doesn't set flash to error" do
+        expect(flash[:alert]).to be_nil
       end
     end
   end

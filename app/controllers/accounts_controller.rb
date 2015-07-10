@@ -3,8 +3,8 @@ class AccountsController < ApplicationController
   end
 
   def edit
-    flash[:alert] = 'Log in to manage your store'
     unless session[:UserLoggedIn]
+      flash[:alert] = 'Log in to manage your store'
       redirect_to root_path
     end
   end
@@ -21,8 +21,8 @@ class AccountsController < ApplicationController
   end
 
   def show
-    flash[:alert] = 'Log in to manage your store'
     unless session[:UserLoggedIn]
+      flash[:alert] = 'Log in to manage your store'
       redirect_to root_path
     end
   end
