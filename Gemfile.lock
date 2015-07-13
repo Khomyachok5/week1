@@ -80,6 +80,11 @@ GEM
       mail (~> 2.2)
     erubis (2.7.0)
     execjs (2.5.2)
+    factory_girl (4.5.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.5.0)
+      factory_girl (~> 4.5.0)
+      railties (>= 3.0.0)
     ffi (1.9.10)
     ffi (1.9.10-x64-mingw32)
     gherkin (2.12.2)
@@ -226,6 +231,7 @@ DEPENDENCIES
   cucumber-rails (~> 1.4.2)
   database_cleaner (~> 1.4.1)
   email_spec
+  factory_girl_rails (~> 4.5.0)
   jbuilder (~> 2.0)
   jquery-rails
   pg (~> 0.18.2)
@@ -243,4 +249,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.10.4
+   1.10.5

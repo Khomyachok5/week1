@@ -53,6 +53,7 @@ group :test do
   gem 'database_cleaner', '~> 1.4.1'
   gem 'email_spec'
   gem 'selenium-webdriver'
+  gem 'factory_girl_rails', '~> 4.5.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

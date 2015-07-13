@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Account, type: :model do
   it "has subdomain attribute" do
-    variable = Account.create(subdomain: "MySuperSD", email: "mysuper@e.mail", password: "ddd")
-    expect(Account.find_by subdomain: "MySuperSD").to eq(variable)
+    account = create :account
+    expect(Account.find_by subdomain: "MySuperSD").to eq(account)
   end
   it { is_expected.to validate_uniqueness_of(:subdomain).with_message('already taken') }
   it { is_expected.to allow_value('333abcz').for(:subdomain) }
