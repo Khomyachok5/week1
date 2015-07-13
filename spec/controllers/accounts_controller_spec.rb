@@ -3,18 +3,15 @@ require 'rails_helper'
 RSpec.describe AccountsController, type: :controller do
 
   context "account exists" do
-    let(:email) {'blahblah@controller.ru'}
-    before (:each) do
-      Account.create!(subdomain: "MySuperSD", email: email, password: 'abcdefg')
-    end
+    let(:account) { create(:account) }
 
     context 'with session email set' do
-      before(:each) { session[:email] = email }
+      before(:each) { session[:email] = account.email }
 
       describe "POST #update" do
-        let(:pass) {'abcdefg123'}
+        let(:pass) { account.password.reverse }
         before (:each) do
-          post :update, account: {password: pass}
+          post :update, account: { password: pass }
         end
 
         it "redirects to #edit" do
@@ -22,7 +19,7 @@ RSpec.describe AccountsController, type: :controller do
         end
 
         it "updates password" do
-          expect(Account.find_by(email: email).password).to eq(pass)
+          expect(Account.find_by(email: account.email).password).to eq(pass)
         end
       end
     end
@@ -73,39 +70,44 @@ RSpec.describe AccountsController, type: :controller do
   end
 
   describe "POST #create" do
-    it "redirects to GET#show" do
-      post :create, account: {subdomain: "AwesomeSD", email: "mysuper@e.mail", password: "Iwantcoffee"}
-      expect(subject).to redirect_to action: :show
-    end
+    context "account does not exist" do
+      let(:account) { build(:account) }
+      before (:each) do
+        post :create, account: {subdomain: account.subdomain, email: account.email, password: account.password}
+      end
 
-    it "creates account" do
-      post :create, account: {subdomain: "AwesomeSD", email: "mysuper@e.mail", password: "coffeewithmilk"}
-      expect(Account.find_by(subdomain: "AwesomeSD")).to_not be_nil
-    end
+      it "redirects to GET#show" do
+        expect(subject).to redirect_to action: :show
+      end
 
-    it "logs account in" do
-      post :create, account: {subdomain: "AwesomeSD", email: "mysuper@e.mail", password: "coffeewithmilk"}
-      expect(session[:UserLoggedIn]).to be_truthy
+      it "creates account" do
+        expect(Account.find_by(subdomain: account.subdomain)).to_not be_nil
+      end
+
+      it "logs account in" do
+        expect(session[:UserLoggedIn]).to be_truthy
+      end
     end
 
     context "account with subdomain already exists" do
+      let(:account){create(:account)}
       before (:each) do
-        Account.create!(subdomain: "MySuperSD", email: 'blahblah@controller.ru', password: 'abcdefg')
+        post :create, account: {subdomain: account.subdomain, email: "mysuper@e.mail", password: "pwd1"}
       end
+
       it "doesn't create new account" do
-        post :create, account: {subdomain: "MySuperSD", email: "mysuper@e.mail", password: "pwd1"}
-        expect(Account.where(subdomain: "MySuperSD").count).to eq(1)
+        expect(Account.where(subdomain: account.subdomain).count).to eq(1)
       end
       it "redirects to GET#new" do
-        post :create, account: {subdomain: "MySuperSD"}
-        expect(subject).to redirect_to action: :new
+         expect(subject).to redirect_to action: :new
       end
     end
 
-    context "invalid subdomain sent" do
-      ["MySuperSD!!!","1"].each do |subdomain|
+    ["MySuperSD!!!","1"].each do |subdomain|
+      context "invalid subdomain sent" do
+        let (:account) { build(:account) }
         before (:each) do
-          post :create, account: {subdomain: subdomain}
+          post :create, account: {subdomain: subdomain, email: account.email, password: account.password}
         end
         it "doesn't create new account" do
           expect(Account.find_by(subdomain: subdomain)).to be_nil
@@ -121,24 +123,20 @@ RSpec.describe AccountsController, type: :controller do
       end
     end
 
-    context "blank email sent" do
-      before (:each) do
-        post :create, account: {subdomain: "SD1", email: "", password: "mypwd123"}
-      end
-      it "doesn't create new account" do
-        expect(Account.find_by(subdomain: "SD1")).to be_nil
-      end
-      it "redirects to GET#new" do
-        expect(subject).to redirect_to action: :new
-      end
-    end
-
-    context "blank password sent" do
-      before (:each) do
-        post :create, account: {subdomain: "SD2", email: "qwer@t.y", password: ""}
-      end
-      it "doesn't create new account" do
-        expect(Account.find_by(subdomain: "SD2")).to be_nil
+    [:email, :password].each do |param|
+      context "blank #{param} sent" do
+        let (:account) { build(:account) }
+        before(:each) do
+          post :create, account: { subdomain: account.subdomain,
+            email: account.subdomain,
+            password: account.password }.merge({ param => '' })
+        end
+        it "doesn't create new account" do
+          expect(Account.find_by(subdomain: account.subdomain)).to be_nil
+        end
+        it "redirects to GET#new" do
+          expect(subject).to redirect_to action: :new
+        end
       end
     end
   end
@@ -190,11 +188,10 @@ RSpec.describe AccountsController, type: :controller do
   end
 
   describe "POST #forgotpassword" do
-    let (:email) {'valid@controller.ru'}
-    let (:posted_email) { email }
+    let!(:account) {create :account}
+    let (:email) {account.email}
     before (:each) do
-      Account.create!(subdomain: "MySuperSD", email: email, password: 'abcde')
-      post :forgotpassword, login: { email: posted_email }
+      post :forgotpassword, login: { email: email }
     end
 
     it "redirects to #reset" do
@@ -206,7 +203,11 @@ RSpec.describe AccountsController, type: :controller do
     end
 
     it "sets an appropriate session e-mail" do
-      expect(subject).to set_session[:email].to(email)
+      expect(subject).to set_session[:email].to(account.email)
+    end
+
+    it "sends an e-mail" do
+      expect(ActionMailer::Base.deliveries.last.to).to eq([account.email])
     end
 
     ['valid@controller.ru', 'gorod@spb.ru'].each do |email_tested|
@@ -215,18 +216,10 @@ RSpec.describe AccountsController, type: :controller do
         it "sets an appropriate flash error" do
           expect(subject).to set_flash[:alert].to("Couldn't find account for #{email}")
         end
-      end
-    end
 
-    it "sends an e-mail" do
-      expect(ActionMailer::Base.deliveries.last.to).to eq([email])
-    end
-
-    context "with an invalid e-mail" do
-      let (:posted_email) {'rrrr@dom.ru'}
-
-      it "doesn't send an e-mail" do
-        expect(ActionMailer::Base.deliveries.last).to be_nil
+        it "doesn't send an e-mail" do
+          expect(ActionMailer::Base.deliveries.last).to be_nil
+        end
       end
     end
   end
