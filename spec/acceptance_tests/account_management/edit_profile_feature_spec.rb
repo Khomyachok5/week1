@@ -1,6 +1,6 @@
 RSpec.feature 'user_management.edit_profile', :type => :feature do
   background do
-    visit "/"
+    visit_url "localhost:8080/"
     Account.create(email: 'test1@user.com', password: '123456qwe', subdomain: 'MySuperSD')
     Account.create(email: 'test2@user.com', password: '123456asd', subdomain: 'MySuperSD1')
   end
@@ -12,7 +12,7 @@ RSpec.feature 'user_management.edit_profile', :type => :feature do
     end
 
     scenario 'user visits edit profile page' do
-      expect_page_url_to_be '/editprofile' 
+      expect_page_url_to_be 'localhost:8080/editprofile' 
       find_field('Password').visible?
       find_field('Password confirmation').visible?
       find_button("Change password", disabled: true)
@@ -21,9 +21,9 @@ RSpec.feature 'user_management.edit_profile', :type => :feature do
 
     scenario 'logged out user cannot visit edit profile page' do
       click_link('Log out')
-      expect_page_url_to_be '/'
-      visit '/editprofile'
-      expect_page_url_to_be '/'
+      expect_page_url_to_be 'localhost:8080/'
+      visit_url 'localhost:8080/editprofile'
+      expect_page_url_to_be 'localhost:8080/'
       expect_error('Log in to manage your store')
     end
 
@@ -31,7 +31,7 @@ RSpec.feature 'user_management.edit_profile', :type => :feature do
       fill_in('Password', with: '123456qwe_new')
       fill_in('Password confirmation', with: '123456qwe_new')
       click_button("Change password")
-      expect_page_url_to_be '/editprofile'
+      expect_page_url_to_be 'localhost:8080/editprofile'
       expect(page).to have_content('Password successfully changed')
       expect_no_errors
     end
@@ -61,7 +61,7 @@ RSpec.feature 'user_management.edit_profile', :type => :feature do
       click_button("Change password")
       click_link('Log out')
       log_in_with('test1@user.com','123456qwe_new')
-      expect_page_url_to_be '/admin'
+      expect_page_url_to_be 'localhost:8080/admin'
       expect(page).to have_content('Hello test1@user.com')
       expect(page).to have_content('Subdomain MySuperSD')
     end
@@ -72,7 +72,7 @@ RSpec.feature 'user_management.edit_profile', :type => :feature do
       click_button("Change password")
       click_link('Log out')
       log_in_with('test1@user.com','123456qwe')
-      expect_page_url_to_be '/'
+      expect_page_url_to_be 'localhost:8080/'
       expect_error('Incorrect email/password')
     end
   end

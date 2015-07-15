@@ -1,6 +1,10 @@
 module Common_methods
   def expect_page_url_to_be(url)
-    expect(current_path).to eq(url)
+    expect(current_url).to eq("http://#{url}")
+  end
+
+  def visit_url(url)
+    Capybara.visit "http://#{url}"
   end
 
   def expect_error(message)
