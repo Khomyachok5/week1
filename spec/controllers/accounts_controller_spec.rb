@@ -226,10 +226,9 @@ RSpec.describe AccountsController, type: :controller do
 
   describe "POST #login" do
     context "with correct credentials" do
-      let(:email) {'megamail@mu.mu'}
+      let (:account) {create :account}
       before (:each) do
-        Account.create!(subdomain: "MySuperSD", email: email, password: "securePWD")
-        post :login, login: {email: email, password: "securePWD"}
+        post :login, login: {email: account.email, password: account.password}
       end
 
       it "redirects to #show" do
@@ -241,30 +240,32 @@ RSpec.describe AccountsController, type: :controller do
       end
 
       it "sets an appropriate session e-mail" do
-        expect(subject).to set_session[:email].to(email)
+        expect(subject).to set_session[:email].to(account.email)
       end
     end
 
-    context "with wrong credentials" do
-      before (:each) do
-        post :login, login: {email: "megilqweqweqw1233@mu.mu", password: "!@#{}securePWD"}
-      end
+    { email: 'wrong@email.com', password: '!@#{}securePWD' }.each do |key, value|
+      context "with wrong #{key}" do
+        let (:account) {create :account}
+        before (:each) do
+          post :login, login: { email: account.email, password: account.password }.merge({ key => value })
+        end
 
-      it "redirects to site#index" do
-        expect(subject).to redirect_to action: :index, controller: :site
+        it "redirects to site#index" do
+          expect(subject).to redirect_to action: :index, controller: :site
+        end
       end
     end
   end
 
   context 'with an existing account' do
-    before(:each) { Account.create!(subdomain: "MySuperSD", email: email, password: "securePWD") }
+    let! (:account) {create :account}
 
     context 'with session email set' do
-      before(:each) { session[:email] = email }
+      before(:each) { session[:email] = account.email }
 
       describe "POST #update_pass" do
         let (:pass) { "new_pass" }
-        let (:email) { 'valid_account@nnn.ru' }
         before(:each) do
           post :update_pass, account: {password: pass}
         end
@@ -278,7 +279,7 @@ RSpec.describe AccountsController, type: :controller do
         end
 
         it "updates password" do
-          expect(Account.find_by(email: email).password).to eq(pass)
+          expect(account.reload.password).to eq(pass)
         end
       end
     end
