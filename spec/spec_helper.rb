@@ -17,40 +17,32 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-# require "capybara/rspec"
-# require "capybara"
-# require "capybara/rails"
-# require 'capybara/poltergeist'
-
-# Capybara.register_driver :poltergeist do |app|
-#     Capybara::Poltergeist::Driver.new(
-#       app,
-#       window_size: [1280, 1024]#,
-#       #debug:       true
-#     )
-#   end
-#   Capybara.default_driver    = :poltergeist
-#   Capybara.javascript_driver = :poltergeist
-
 require 'capybara/poltergeist'
 require 'database_cleaner'
+require 'email_spec'
+require './spec/acceptance_tests/common_methods.rb'
+require "rails_helper"
+require 'spec_helper'
+
+
 Capybara.default_driver    = :poltergeist
+#Capybara.default_driver    = :selenium
 
-#DatabaseCleaner.strategy = :truncation
-
-# then, whenever you need to clean the DB
-#DatabaseCleaner.clean
+Capybara.server_port = 8080
+Capybara.server_host = 'localhost'
 
 
 RSpec.configure do |config|
 
+  config.include Common_methods
 
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
   end
 
   config.around(:each) do |example|
+    ActionMailer::Base.deliveries.clear
     DatabaseCleaner.cleaning do
       example.run
     end
@@ -131,4 +123,9 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.include(EmailSpec::Helpers)
+  config.include(EmailSpec::Matchers)
+  config.include FactoryGirl::Syntax::Methods
+
 end

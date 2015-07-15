@@ -1,0 +1,8 @@
+= form_tag update_pass_path
+  = label :account, :password, 'Password'
+  = password_field :account, :password
+  br
+  = label :account, :password_confirmation, 'Password confirmation'
+  = password_field :account, :password_confirmation
+  br
+  = submit_tag 'Set password', disabled: true, id: :btnSubmit

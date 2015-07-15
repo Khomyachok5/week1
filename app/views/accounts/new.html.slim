@@ -1,6 +1,6 @@
 = form_tag Hash.new, id: 'newAccountForm'
-  = label '', '', 'E-mail'
-  = email_field '', ''
+  = label 'account', 'email', 'E-mail'
+  = email_field 'account', 'email'
   br
   = label 'account', 'password', 'Password'
   = password_field 'account', 'password'
@@ -30,8 +30,8 @@ javascript:
 
   $(document).ready(function () {
     $('#newAccountForm input').on('keyup blur', function () {
-        if ($('#_').val().length > 0 &&
-            IsEmail($('#_').val()) &&
+        if ($('#account_email').val().length > 0 &&
+            IsEmail($('#account_email').val()) &&
             $('#account_password').val().length > 0 &&
             $('#account_password_confirmation').val().length > 0 &&
             $('#account_password').val() == $('#account_password_confirmation').val() &&

@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20150624101042) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "subdomain"
+    t.string   "password"
+    t.string   "email"
   end
 
 end
