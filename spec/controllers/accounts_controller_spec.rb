@@ -1,5 +1,11 @@
 require 'rails_helper'
 
+RSpec.shared_examples "redirectable" do |action, controller = :accounts|
+  it "redirects to ##{action}" do
+    expect(subject).to redirect_to action: action, controller: controller
+  end
+end
+
 RSpec.describe AccountsController, type: :controller do
 
   context "account exists" do
@@ -14,9 +20,7 @@ RSpec.describe AccountsController, type: :controller do
           post :update, account: { password: pass }
         end
 
-        it "redirects to #edit" do
-          expect(subject).to redirect_to action: :edit
-        end
+        include_examples 'redirectable', :edit
 
         it "updates password" do
           expect(Account.find_by(email: account.email).password).to eq(pass)
@@ -76,9 +80,7 @@ RSpec.describe AccountsController, type: :controller do
         post :create, account: {subdomain: account.subdomain, email: account.email, password: account.password}
       end
 
-      it "redirects to GET#show" do
-        expect(subject).to redirect_to action: :show
-      end
+      include_examples 'redirectable', :show
 
       it "creates account" do
         expect(Account.find_by(subdomain: account.subdomain)).to_not be_nil
@@ -98,9 +100,8 @@ RSpec.describe AccountsController, type: :controller do
       it "doesn't create new account" do
         expect(Account.where(subdomain: account.subdomain).count).to eq(1)
       end
-      it "redirects to GET#new" do
-         expect(subject).to redirect_to action: :new
-      end
+
+      include_examples 'redirectable', :new
     end
 
     ["MySuperSD!!!","1"].each do |subdomain|
@@ -117,9 +118,7 @@ RSpec.describe AccountsController, type: :controller do
           expect(subject).to set_flash[:alert].to(/invalid subdomain/)
         end
 
-        it "redirects to GET#new" do
-          expect(subject).to redirect_to action: :new
-        end
+        include_examples 'redirectable',  :new
       end
     end
 
@@ -134,9 +133,8 @@ RSpec.describe AccountsController, type: :controller do
         it "doesn't create new account" do
           expect(Account.find_by(subdomain: account.subdomain)).to be_nil
         end
-        it "redirects to GET#new" do
-          expect(subject).to redirect_to action: :new
-        end
+
+        include_examples 'redirectable', :new
       end
     end
   end
@@ -194,9 +192,7 @@ RSpec.describe AccountsController, type: :controller do
       post :forgotpassword, login: { email: email }
     end
 
-    it "redirects to #reset" do
-      expect(subject).to redirect_to action: :reset
-    end
+    include_examples 'redirectable', :reset
 
     it "sets an appropriate flash notice" do
       expect(subject).to set_flash[:notice].to('instructions were sent')
@@ -231,9 +227,7 @@ RSpec.describe AccountsController, type: :controller do
         post :login, login: {email: account.email, password: account.password}
       end
 
-      it "redirects to #show" do
-        expect(subject).to redirect_to action: :show
-      end
+      include_examples 'redirectable',  :show
 
       it "logs account in" do
         expect(session[:UserLoggedIn]).to be_truthy
@@ -251,9 +245,7 @@ RSpec.describe AccountsController, type: :controller do
           post :login, login: { email: account.email, password: account.password }.merge({ key => value })
         end
 
-        it "redirects to site#index" do
-          expect(subject).to redirect_to action: :index, controller: :site
-        end
+        include_examples 'redirectable', :index, :site
       end
     end
   end
@@ -270,9 +262,7 @@ RSpec.describe AccountsController, type: :controller do
           post :update_pass, account: {password: pass}
         end
 
-        it "redirects to site#index" do
-          expect(subject).to redirect_to action: :index, controller: :site
-        end
+        include_examples 'redirectable', :index, :site
 
         it "sets an appropriate flash notice" do
           expect(subject).to set_flash[:notice].to('Password successfully changed')
