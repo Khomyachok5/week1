@@ -14,8 +14,13 @@ Capybara.register_driver :poltergeist do |app|
       #debug:       true
     )
   end
-  Capybara.default_driver    = :poltergeist
-  Capybara.javascript_driver = :poltergeist
+
+Capybara.default_driver    = :poltergeist
+Capybara.javascript_driver = :poltergeist
+#Capybara.default_driver    = :selenium
+
+Capybara.server_port = 8080
+Capybara.server_host = 'localhost'
 
 
 DatabaseCleaner.strategy = :truncation

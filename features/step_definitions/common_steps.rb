@@ -1,5 +1,5 @@
 Given(/^visitor opens start page$/) do
-  visit '/'
+  visit "http://localhost:8080"
 end
 
 Then(/^visitor should see link to new account registration page$/) do
