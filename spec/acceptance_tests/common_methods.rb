@@ -1,10 +1,10 @@
 module Common_methods
   def expect_page_url_to_be(url)
-    expect(current_url).to eq("http://#{url}")
+    expect(current_url).to eq("https://#{url}")
   end
 
   def visit_url(url)
-    visit "http://#{url}"
+    visit "https://#{url}"
   end
 
   def expect_error(message)
@@ -22,7 +22,7 @@ module Common_methods
   end
 
   def register_account(login,pass,subdomain)
-    visit "http://localhost:8080"
+    visit_url "localhost:8080"
     click_link 'Create new account'
     fill_in('E-mail', with: login)
     fill_in('Password', with: pass)
