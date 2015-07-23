@@ -1,11 +1,11 @@
 Transform(/^"Create new account" page$/) do |impersonator|
-  'localhost:8080/accounts/new'
+  'lvh.me:3000/accounts/new'
 end
 
 Transform(/^"Start" page$/) do |impersonator|
-  'localhost:8080/'
+  'lvh.me:3000/'
 end
 
 Transform(/^"Account admin panel" page$/) do |impersonator|
-  'mysupersd.localhost:8080/admin'
+  'mysupersd.lvh.me:3000/admin'
 end

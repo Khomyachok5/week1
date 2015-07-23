@@ -2,7 +2,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
   background do
     register_account('test1@user.com', '123456qwe', 'MySuperSD')
     register_account('test2@user.com', '123456asd', 'MySuperSD2')
-    visit_url "mysupersd.localhost:8080"
+    visit_url "mysupersd.lvh.me:3000"
   end
 
   scenario "User visits login page" do
@@ -13,14 +13,14 @@ RSpec.feature 'user_management.user_login', :type => :feature do
   end
 
   scenario "User tries to visit admin page without logging in" do
-    visit_url 'mysupersd.localhost:8080/admin'
-    expect_page_url_to_be 'mysupersd.localhost:8080/'
+    visit_url 'mysupersd.lvh.me:3000/admin'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/'
     expect_error('Log in to manage your store')
   end
 
   scenario 'user logs in with correct creds' do
     log_in_with('test1@user.com','123456qwe')
-    expect_page_url_to_be 'mysupersd.localhost:8080/admin'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/admin'
     expect(page).to have_content('Hello test1@user.com')
     expect(page).to have_content('Subdomain MySuperSD')
     expect_no_errors
@@ -28,45 +28,45 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 
   scenario 'user logs in with creds to another account' do
     log_in_with('test2@user.com','123456asd')
-    expect_page_url_to_be 'mysupersd.localhost:8080/'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/'
     expect_error('Incorrect email/password')
     find_link('Re-set password').visible?
   end
 
   scenario 'user logs out' do
     log_in_with('test1@user.com','123456qwe')
-    expect_page_url_to_be 'mysupersd.localhost:8080/admin'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/admin'
     click_link('Log out')
-    expect_page_url_to_be 'mysupersd.localhost:8080/'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/'
   end
 
   scenario 'logged out user cannot visit admin page' do
     log_in_with('test1@user.com','123456qwe')
-    expect_page_url_to_be 'mysupersd.localhost:8080/admin'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/admin'
     click_link('Log out')
-    expect_page_url_to_be 'mysupersd.localhost:8080/'
-    visit_url 'mysupersd.localhost:8080/admin'
-    expect_page_url_to_be 'mysupersd.localhost:8080/'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/'
+    visit_url 'mysupersd.lvh.me:3000/admin'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/'
     expect_error('Log in to manage your store')
   end
 
   scenario 'user logs in with non-existing login' do
     log_in_with('test@user.com', '123456qwe')
-    expect_page_url_to_be 'mysupersd.localhost:8080/'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/'
     expect_error('Incorrect email/password')
     find_link('Re-set password').visible?
   end
 
   scenario 'user opens password reset page' do
     click_link "Re-set password"
-    expect_page_url_to_be 'mysupersd.localhost:8080/forgotpassword'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/forgotpassword'
     find_field('E-mail').visible?
     find_button("Email instructions", disabled: true)
   end
 
   scenario 'user enters valid email to re-set password form' do
     click_link "Re-set password"
-    expect_page_url_to_be 'mysupersd.localhost:8080/forgotpassword'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/forgotpassword'
     find_field('E-mail').visible?
     find_button("Email instructions", disabled: true)
     fill_in('E-mail', with: 'test1@user.com')
@@ -75,7 +75,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 
   scenario 'user sends password re-set instructions' do
     click_link "Re-set password"
-    expect_page_url_to_be 'mysupersd.localhost:8080/forgotpassword'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/forgotpassword'
     fill_in('E-mail', with: 'test1@user.com')
     click_button("Email instructions")
     expect(page).to have_content('instructions were sent')
@@ -83,10 +83,10 @@ RSpec.feature 'user_management.user_login', :type => :feature do
 
   scenario 'user sends password re-set instructions to non-existing email' do
     click_link "Re-set password"
-    expect_page_url_to_be 'mysupersd.localhost:8080/forgotpassword'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/forgotpassword'
     fill_in('E-mail', with: 'test1@user.ru')
     click_button("Email instructions")
-    expect_page_url_to_be 'mysupersd.localhost:8080/forgotpassword'
+    expect_page_url_to_be 'mysupersd.lvh.me:3000/forgotpassword'
     find_field('E-mail').visible?
     find_button("Email instructions", disabled: true)
     expect(page).to have_content("Couldn't find account for test1@user.ru")
@@ -97,7 +97,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
     before(:each) do
       reset_mailer
       click_link "Re-set password"
-      expect_page_url_to_be 'mysupersd.localhost:8080/forgotpassword'
+      expect_page_url_to_be 'mysupersd.lvh.me:3000/forgotpassword'
       fill_in('E-mail', with: 'test1@user.com')
       click_button("Email instructions")
     end
@@ -129,9 +129,9 @@ RSpec.feature 'user_management.user_login', :type => :feature do
       #get url from email
       url = /href=\"([^"]*)\"/.match(current_email.html_part.body.to_s)[1]
       #then send new email with password reset instuctions
-      visit_url "mysupersd.localhost:8080/"
+      visit_url "mysupersd.lvh.me:3000/"
       click_link "Re-set password"
-      expect_page_url_to_be 'mysupersd.localhost:8080/forgotpassword'
+      expect_page_url_to_be 'mysupersd.lvh.me:3000/forgotpassword'
       fill_in('E-mail', with: 'test1@user.com')
       click_button("Email instructions")
       #try to follow link fromm 1st email
@@ -152,7 +152,7 @@ RSpec.feature 'user_management.user_login', :type => :feature do
         fill_in('Password', with: '123456qwe_new')
         fill_in('Password confirmation', with: '123456qwe_new')
         click_button("Set password")
-        expect_page_url_to_be 'mysupersd.localhost:8080/'
+        expect_page_url_to_be 'mysupersd.lvh.me:3000/'
         expect(page).to have_content('Password successfully changed')
       end
 
@@ -160,8 +160,8 @@ RSpec.feature 'user_management.user_login', :type => :feature do
         fill_in('Password', with: '123456qwe_new')
         fill_in('Password confirmation', with: '123456qwe_new')
         click_button("Set password")
-        visit_url 'mysupersd.localhost:8080/admin'
-        expect_page_url_to_be 'mysupersd.localhost:8080/'
+        visit_url 'mysupersd.lvh.me:3000/admin'
+        expect_page_url_to_be 'mysupersd.lvh.me:3000/'
         expect_error('Log in to manage your store')
       end
 
@@ -188,9 +188,9 @@ RSpec.feature 'user_management.user_login', :type => :feature do
         fill_in('Password', with: '123456qwe_new')
         fill_in('Password confirmation', with: '123456qwe_new')
         click_button("Set password")
-        expect_page_url_to_be 'mysupersd.localhost:8080/'
+        expect_page_url_to_be 'mysupersd.lvh.me:3000/'
         log_in_with('test1@user.com','123456qwe_new')
-        expect_page_url_to_be 'mysupersd.localhost:8080/admin'
+        expect_page_url_to_be 'mysupersd.lvh.me:3000/admin'
         expect(page).to have_content('Hello test1@user.com')
         expect(page).to have_content('Subdomain MySuperSD')
       end
@@ -199,9 +199,9 @@ RSpec.feature 'user_management.user_login', :type => :feature do
         fill_in('Password', with: '123456qwe_new')
         fill_in('Password confirmation', with: '123456qwe_new')
         click_button("Set password")
-        expect_page_url_to_be 'mysupersd.localhost:8080/'
+        expect_page_url_to_be 'mysupersd.lvh.me:3000/'
         log_in_with('test1@user.com','123456qwe')
-        expect_page_url_to_be 'mysupersd.localhost:8080/'
+        expect_page_url_to_be 'mysupersd.lvh.me:3000/'
         expect_error('Incorrect email/password')
       end
     end
