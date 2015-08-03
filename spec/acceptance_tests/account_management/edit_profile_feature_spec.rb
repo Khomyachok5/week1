@@ -63,7 +63,7 @@ RSpec.feature 'user_management.edit_profile', :type => :feature do
       log_in_with('test1@user.com','123456qwe_new')
       expect_page_url_to_be 'mysupersd.lvh.me:3000/admin'
       expect(page).to have_content('Hello test1@user.com')
-      expect(page).to have_content('Subdomain MySuperSD')
+      expect(page).to have_content('Subdomain mysupersd')
     end
 
     scenario 'user tries to logs in with old password' do

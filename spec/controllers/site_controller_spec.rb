@@ -3,8 +3,9 @@ require 'rails_helper'
 RSpec.describe SiteController, type: :controller do
 
   context "user successfully logged in" do
+    let(:account) {create :account, user_logged_in: true}
     before (:each) do
-      session[:UserLoggedIn] = true
+      session[:email] = account.email
     end
 
     describe "GET #index" do
@@ -17,7 +18,7 @@ RSpec.describe SiteController, type: :controller do
       end
 
       it "logs account out" do
-        expect(session[:UserLoggedIn]).to be_falsey
+        expect(account.reload.user_logged_in).to be_falsey
       end
     end
   end
@@ -25,6 +26,7 @@ RSpec.describe SiteController, type: :controller do
   context "user is not logged in" do
     describe "GET #index" do
       before (:each) do
+        create :account
         get :index
       end
 

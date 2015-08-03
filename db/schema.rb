@@ -17,11 +17,12 @@ ActiveRecord::Schema.define(version: 20150624101042) do
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.string   "subdomain"
     t.string   "password"
     t.string   "email"
+    t.boolean  "user_logged_in"
   end
 
 end

@@ -29,8 +29,6 @@ Capybara.default_driver    = :poltergeist
 #Capybara.default_driver    = :selenium
 
 Capybara.server_port = 3000
-Capybara.server_host = 'lvh.me'
-
 
 RSpec.configure do |config|
 

@@ -1,5 +1,5 @@
 class SiteController < ApplicationController
   def index
-    session[:UserLoggedIn] = false
+    current_account.update user_logged_in: false if current_account
   end
 end

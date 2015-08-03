@@ -5,6 +5,7 @@ class CreateAccounts < ActiveRecord::Migration
       t.string :subdomain
       t.string :password
       t.string :email
+      t.boolean :user_logged_in
     end
   end
 end

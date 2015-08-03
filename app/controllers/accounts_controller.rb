@@ -8,10 +8,11 @@ class AccountsController < ApplicationController
   end
 
   def create
-    sign_in
     account = Account.new params.require(:account).permit(:subdomain, :email, :password)
+    account.user_logged_in = true
+    account.subdomain.downcase!
     if account.save
-      redirect_to admin_path
+      redirect_to admin_url subdomain: account.subdomain
     else
       flash.alert = account.errors.full_messages.join('<br />')
       redirect_to accounts_new_path
@@ -22,11 +23,10 @@ class AccountsController < ApplicationController
   end
 
   def login
-    sign_in
     session[:email] = params[:login][:email]
-    current_account = Account.find_by email: params[:login][:email]
-    if current_account && current_account.password == params[:login][:password]
-      flash[:notice] = "Hello #{current_account.email} Subdomain #{current_account.subdomain}"
+    sign_in if current_account
+    if current_account && current_account.password == params[:login][:password] && current_account.subdomain.downcase == request.subdomain.downcase
+      flash[:notice] = "Hello #{current_account.email} Subdomain #{current_account.subdomain.downcase}"
       redirect_to admin_path
     else
       flash[:alert] = 'Incorrect email/password'
@@ -46,24 +46,28 @@ class AccountsController < ApplicationController
   end
 
   def update_pass
-    Account.find_by(email: session[:email]).update(password: params[:account][:password])
+    current_account.update(password: params[:account][:password])
     flash[:notice] = 'Password successfully changed'
     redirect_to root_path
   end
 
   def update
-    Account.find_by(email: session[:email]).update(password: params[:account][:password])
+    current_account.update(password: params[:account][:password])
     redirect_to edit_profile_path
   end
 
   private
 
   def sign_in
-    session[:UserLoggedIn] = true
+    current_account.update user_logged_in: true
+  end
+
+  def signed_in?
+    current_account.try :user_logged_in
   end
 
   def authorize!
-    return if session[:UserLoggedIn]
+    return if signed_in?
     flash[:alert] = 'Log in to manage your store'
     redirect_to root_path
   end

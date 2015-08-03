@@ -3,11 +3,11 @@ When(/^user clicks "(.*?)" link$/) do |lnk|
 end
 
 Then(/^user should be redirected to (.*?)$/) do |target_page|
-  expect(current_url).to eq("https://#{target_page}")
+  expect(current_url).to eq("http://#{target_page}")
 end
 
 Then(/^user should stay on (.*?)$/) do |target_page|
-  expect(current_url).to eq("https://#{target_page}")
+  expect(current_url).to eq("http://#{target_page}")
 end
 
 Then(/^all fields are visible$/) do
@@ -18,7 +18,7 @@ Then(/^all fields are visible$/) do
 end
 
 Given(/^user visits (.*?)$/) do |target_page|
-  visit "https://#{target_page}"
+  visit "http://#{target_page}"
 end
 
 When(/^user properly fills the form$/) do

@@ -2,11 +2,12 @@ require 'rails_helper'
 
 RSpec.shared_examples "redirectable" do |action, controller = :accounts|
   it "redirects to ##{action}" do
-    expect(subject).to redirect_to action: action, controller: controller
+    expect(subject).to redirect_to action: action, controller: controller, subdomain: subdomain
   end
 end
 
 RSpec.describe AccountsController, type: :controller do
+  let(:subdomain) { nil }
 
   context "account exists" do
     let(:account) { create(:account) }
@@ -30,8 +31,11 @@ RSpec.describe AccountsController, type: :controller do
   end
 
   context "user successfully logged in" do
+    let(:account) {create :account, user_logged_in: true}
     before (:each) do
-      session[:UserLoggedIn] = true
+      request.env['HTTP_HOST'] = "#{account.subdomain.downcase!}.#{request.env['HTTP_HOST']}"
+      account.subdomain.downcase!
+      account.save
     end
 
     describe "GET #edit" do
@@ -51,6 +55,7 @@ RSpec.describe AccountsController, type: :controller do
 
 
   context "user is not logged in" do
+    let(:account) {create :account}
     describe "GET #edit" do
       before (:each) do
         get :edit
@@ -76,29 +81,30 @@ RSpec.describe AccountsController, type: :controller do
   describe "POST #create" do
     context "account does not exist" do
       let(:account) { build(:account) }
+      let(:subdomain) { account.subdomain.downcase! }
       before (:each) do
-        post :create, account: {subdomain: account.subdomain, email: account.email, password: account.password}
+        post :create, account: {subdomain: subdomain.upcase, email: account.email, password: account.password}
       end
 
       include_examples 'redirectable', :show
 
       it "creates account" do
-        expect(Account.find_by(subdomain: account.subdomain)).to_not be_nil
+        expect(Account.find_by(subdomain: subdomain)).to_not be_nil
       end
 
       it "logs account in" do
-        expect(session[:UserLoggedIn]).to be_truthy
+        expect(Account.find_by(subdomain: subdomain).user_logged_in).to be_truthy
       end
     end
 
     context "account with subdomain already exists" do
-      let(:account){create(:account)}
+      let(:account){create(:account, subdomain: 'mysupersd')}
       before (:each) do
-        post :create, account: {subdomain: account.subdomain, email: "mysuper@e.mail", password: "pwd1"}
+        post :create, account: {subdomain: account.subdomain.upcase, email: "mysuper@e.mail", password: "pwd1"}
       end
 
       it "doesn't create new account" do
-        expect(Account.where(subdomain: account.subdomain).count).to eq(1)
+        expect(Account.count).to eq(1)
       end
 
       include_examples 'redirectable', :new
@@ -140,8 +146,12 @@ RSpec.describe AccountsController, type: :controller do
   end
 
   context "user successfully logged in" do
+    let(:account) { create :account, user_logged_in: true }
+    let(:subdomain) { account.subdomain.downcase! }
     before (:each) do
-      session[:UserLoggedIn] = true
+      account.subdomain.downcase!
+      account.save
+      request.env['HTTP_HOST'] = "#{account.subdomain.downcase}.#{request.env['HTTP_HOST']}"
     end
 
     describe "GET #show" do
@@ -223,14 +233,18 @@ RSpec.describe AccountsController, type: :controller do
   describe "POST #login" do
     context "with correct credentials" do
       let (:account) {create :account}
+      let (:subdomain) {account.subdomain.downcase}
       before (:each) do
+        account.subdomain.downcase!
+        account.save
+        request.env['HTTP_HOST'] = "#{account.subdomain.downcase}.#{request.env['HTTP_HOST']}"
         post :login, login: {email: account.email, password: account.password}
       end
 
       include_examples 'redirectable',  :show
 
       it "logs account in" do
-        expect(session[:UserLoggedIn]).to be_truthy
+        expect(Account.find_by(subdomain: account.subdomain).user_logged_in).to be_truthy
       end
 
       it "sets an appropriate session e-mail" do
@@ -247,6 +261,41 @@ RSpec.describe AccountsController, type: :controller do
 
         include_examples 'redirectable', :index, :site
       end
+    end
+
+    context 'with wrong e-mail to existing subdomain' do
+      let (:account) {create :account}
+      let (:subdomain) {account.subdomain.downcase}
+      before (:each) do
+        account.subdomain.downcase!
+        account.save
+        request.env['HTTP_HOST'] = "#{subdomain}.#{request.env['HTTP_HOST']}"
+        post :login, login: { email: 'testemail@tufly.ru', password: account.password}
+      end
+
+      include_examples 'redirectable', :index, :site
+    end
+
+    context 'to unauthorized subdomain' do
+      let (:account) {create :account}
+      let (:subdomain) {'MySuperSD2'}
+      before (:each) do
+        request.env['HTTP_HOST'] = "#{subdomain}.#{request.env['HTTP_HOST']}"
+        post :login, login: { email: account.email, password: account.password }
+      end
+
+      include_examples 'redirectable', :index, :site
+    end
+
+    context 'to an appropriate domain' do
+      let (:account) {create :account}
+      let (:subdomain) {'MySuperSD'}
+      before (:each) do
+        request.env['HTTP_HOST'] = "#{subdomain}.#{request.env['HTTP_HOST']}"
+        post :login, login: { email: account.email, password: account.password }
+      end
+
+       include_examples 'redirectable', :show
     end
   end
 
